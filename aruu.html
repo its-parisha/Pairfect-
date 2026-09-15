@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Baby Pink Website</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #FFB6C1 0%, #FFC0CB 100%); /* Modern gradient background */
+            font-family: 'Poppins', sans-serif; /* Modern font */
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+        .message {
+            font-size: 1.8em;
+            margin-bottom: 30px;   
+            color: #C71585;
+            font-weight: 600;
+            position: relative;
+            z-index: 10;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+        }
+        .envelope {
+            font-size: 10em;
+            cursor: pointer;
+            transition: transform 0.3s ease, filter 0.3s ease; /* Smoother transitions */
+            position: relative;
+            z-index: 10;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2)); /* Modern shadow */
+        }
+        .envelope:hover {
+            transform: scale(1.1) rotate(5deg); /* Fun, modern hover with slight rotation */
+            filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.3));
+        }
+        /* Hearts background animation */
+        .heart {
+            position: absolute;
+            font-size: 2em;
+            color: #FF69B4;
+            filter: blur(1px);
+            animation: float 4s ease-in-out infinite;
+            z-index: 1;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-50px); }
+        }
+        .heart:nth-child(3n+1) {
+            left: 10%;
+            animation-direction: normal;
+        }
+        .heart:nth-child(3n+2) {
+            left: 45%;
+            animation-direction: reverse;
+        }
+        .heart:nth-child(3n+3) {
+            left: 80%;
+            animation-direction: normal;
+        }
+        .heart:nth-child(1) { top: 20%; animation-delay: 0s; }
+        .heart:nth-child(2) { top: 40%; animation-delay: 1s; }
+        .heart:nth-child(3) { top: 60%; animation-delay: 2s; }
+        .heart:nth-child(4) { top: 30%; animation-delay: 0.5s; }
+        .heart:nth-child(5) { top: 50%; animation-delay: 1.5s; }
+        .heart:nth-child(6) { top: 70%; animation-delay: 2.5s; }
+        .heart:nth-child(7) { top: 10%; animation-delay: 0.8s; }
+        .heart:nth-child(8) { top: 80%; animation-delay: 1.8s; }
+        .heart:nth-child(9) { top: 25%; animation-delay: 2.2s; }
+        .heart:nth-child(10) { top: 55%; animation-delay: 0.3s; }
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 20;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6); /* Darker overlay for modern feel */
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px); /* Modern blur effect */
+        }
+        .modal-content {
+            background: linear-gradient(135deg, #FFDAB9 0%, #FFE4B5 100%); /* Peach gradient */
+            padding: 30px;
+            border-radius: 20px; /* More rounded for modernity */
+            width: 90%;
+            max-width: 450px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); /* Deeper shadow */
+            animation: pop 0.6s ease-out;
+            position: relative;
+        }
+        @keyframes pop {
+            0% { transform: scale(0.8) rotate(-5deg); opacity: 0; }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+        .close {
+            color: #333;
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+        .close:hover {
+            color: #C71585;
+        }
+    </style>
+</head>
+<body>
+    <!-- Background hearts -->
+    <div class="heart">❤️</div>
+    <div class="heart">❤️</div>
+    <div class="heart">❤️</div>
+    <div class="heart">❤️</div>
+    <div class="heart">❤️</div>
+    <div class="heart">❤️</div>
+    <div class="heart">❤️</div>
+    <div class="heart">❤️</div>
+    <div class="heart">❤️</div>
+    <div class="heart">❤️</div>
+
+    <!-- Main content -->
+    <div class="message">ARUU ❤️ THIS IS FOR YOU 🥰</div>
+    <div class="envelope" onclick="openModal()">💌</div>
+
+    <!-- Modal -->
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2>💕Aruu,</h2>
+            <p>💕Happy 4th to us! 💍🌙✨</p>
+            <p>Four years… and yet it feels like both a beautiful lifetime and the blink of an eye. 
+                Every moment with you has woven itself into my heart so deeply that I can’t imagine my world without you in it.
+            You’ve been my safe place, my happiness, my strength, and the person who makes life feel beautifully meaningful. 🤍
+The way you care for me, the way you understand me, the way you make me feel loved without even trying…I treasure it all. You don’t just hold my hand—you hold my heart. 🫶❤️
+
+
+At last Thank you for always stand by me and love me even at my worst..
+I Love You Aruu...
+ </p>
+        </div>
+    </div>
+
+    <script>
+        function openModal() {
+            document.getElementById('myModal').style.display = 'flex';
+        }
+        function closeModal() {
+            document.getElementById('myModal').style.display = 'none';
+        }
+        window.onclick = function(event) {
+            if (event.target == document.getElementById('myModal')) {
+                closeModal();
+            }
+        }
+    </script>
+</body>
+</html>

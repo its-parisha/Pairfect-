@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Baby Pink Website</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
+    <style>
+        body {
+            background: linear-gradient(135deg, #ffb6c1 0%, #ffc0cb 100%);
+            font-family: "Poppins", sans-serif;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Floating Hearts */
+        .heart {
+            position: absolute;
+            font-size: 2em;
+            color: #ff69b4;
+            filter: blur(1px);
+            animation: float 4s ease-in-out infinite;
+            z-index: 1;
+        }
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-50px);
+            }
+        }
+
+        /* Sparkles */
+        .sparkle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.8;
+            animation: sparkleAnim 2s linear infinite;
+        }
+        @keyframes sparkleAnim {
+            from {
+                transform: translateY(0) scale(1);
+            }
+            to {
+                transform: translateY(-100px) scale(0);
+            }
+        }
+
+        .message {
+            font-size: 1.8em;
+            margin-bottom: 30px;
+            color: #c71585;
+            font-weight: 600;
+            position: relative;
+            z-index: 10;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Envelope Animation */
+        .envelope {
+            font-size: 10em;
+            cursor: pointer;
+            transition: transform 0.5s ease;
+            z-index: 10;
+        }
+        .envelope.opening {
+            animation: openEnvelope 1s forwards;
+        }
+
+        @keyframes openEnvelope {
+            0% {
+                transform: translateY(0) scale(1) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-20px) scale(1.2) rotate(10deg);
+            }
+            100% {
+                transform: translateY(-50px) scale(1) rotate(0deg);
+                opacity: 0;
+            }
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 20;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+        }
+        .modal-content {
+            background: linear-gradient(135deg, #ffd9c0 0%, #ffe8d6 100%);
+            padding: 30px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 450px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            animation: pop 0.6s ease-out;
+            position: relative;
+        }
+        @keyframes pop {
+            0% {
+                transform: scale(0.8) rotate(-5deg);
+                opacity: 0;
+            }
+            100% {
+                transform: scale(1) rotate(0deg);
+                opacity: 1;
+            }
+        }
+
+        .close {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 30px;
+            cursor: pointer;
+        }
+
+        /* Typewriter */
+        .typewriter {
+            font-size: 1.1em;
+            line-height: 1.5em;
+            text-align: center;
+            white-space: pre-wrap;
+            overflow: hidden;
+            border-right: 2px solid #c71585;
+            width: 100%;
+            margin-top: 20px;
+            animation: caretBlink 0.7s infinite;
+        }
+        @keyframes caretBlink {
+            0%, 100% {
+                border-color: transparent;
+            }
+            50% {
+                border-color: #c71585;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating Hearts -->
+    <div class="heart">❤️</div>
+    <div class="heart">❤️</div>
+    <div class="heart">❤️</div>
+    <div class="heart">❤️</div>
+    <div class="heart">❤️</div>
+    <div class="heart">❤️</div>
+    <div class="heart">❤️</div>
+    <div class="heart">❤️</div>
+    <div class="heart">❤️</div>
+    <div class="heart">❤️</div>
+
+    <!-- Sparkles Container -->
+    <div id="sparkles"></div>
+
+    <div class="message">ARUU ❤️ THIS IS FOR YOU 🥰</div>
+
+<!-- Two Envelopes -->
+<div style="display:flex; gap:40px; z-index:10;">
+    <div class="envelope" id="envelope">💌</div>
+    <div class="envelope" id="envelope2">💌</div>
+</div>" id="envelope">💌</div>
+
+    <!-- Modal -->
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2>💕Aruu,</h2>
+            <div id="letterText" class="typewriter"></div>
+        </div>
+    </div>
+
+    <!-- Background Music -->
+    <audio id="bgMusic" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_7a8e59c779.mp3?filename=romantic-piano-113669.mp3"></audio>
+
+    <script>
+        const envelope = document.getElementById("envelope");
+        const modal = document.getElementById("myModal");
+        const textBox = document.getElementById("letterText");
+        const music = document.getElementById("bgMusic");
+
+        const fullText = `Happy 4th to us! 💍🌙✨\n\nFour years… and yet it feels like both a beautiful lifetime and the blink of an eye. Every moment with you has woven itself into my heart so deeply that I can’t imagine my world without you in it.\n\nYou’ve been my safe place, my happiness, my strength, and the person who makes life feel beautifully meaningful. 🤍\n\nThe way you care for me, the way you understand me, the way you make me feel loved without even trying… I treasure it all. You don’t just hold my hand—you hold my heart. 🫶❤️\n\nThank you for always standing by me and loving me even at my worst. I love you, Aruu...`;
+
+        function typeWriter(text, i = 0) {
+            if (i < text.length) {
+                textBox.textContent += text.charAt(i);
+                setTimeout(() => typeWriter(text, i + 1), 35);
+            }
+        }
+
+        envelope.onclick = function () {
+            envelope.classList.add("opening");
+            setTimeout(() => {
+                modal.style.display = "flex";
+                typeWriter(fullText);
+                music.play();
+            }, 900);
+        };
+
+        function closeModal() {
+            modal.style.display = "none";
+            textBox.textContent = "";
+            music.pause();
+            music.currentTime = 0;
+        }
+
+        /* Sparkle Generator */
+        function createSparkle() {
+            const sparkle = document.createElement("div");
+            sparkle.classList.add("sparkle");
+            sparkle.style.left = Math.random() * window.innerWidth + "px";
+            sparkle.style.top = window.innerHeight + "px";
+
+            document.body.appendChild(sparkle);
+
+            setTimeout(() => sparkle.remove(), 2000);
+        }
+
+        setInterval(createSparkle, 200);
+    </script>
+    
+
+    <!-- Second Modal -->
+    <div id="modal2" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeSecond()">&times;</span>
+            <h2>🙏💕</h2>
+            <p style="font-size:1.4em; font-weight:600; color:#C71585;">AAJ KE LIYE MAAF KRDO PLZZZ 🙏🥺</p>
+        </div>
+    </div>
+
+    <script>
+        const envelope2 = document.getElementById("envelope2");
+        const modal2 = document.getElementById("modal2");
+
+        envelope2.onclick = function () {
+            envelope2.classList.add("opening");
+            setTimeout(() => {
+                modal2.style.display = "flex";
+            }, 900);
+        };
+
+        function closeSecond(){
+            modal2.style.display = "none";
+        }
+    </script>
+</body>
+</html>

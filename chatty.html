@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>PAIRFECT - Dashboard</title>
+
+<!-- Google Fonts -->
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+font-family:'Inter',sans-serif;
+background:#ffffff;
+overflow-x:hidden;
+color:#333;
+position:relative
+}
+body::before{
+content:'';position:absolute;inset:0;
+background:
+radial-gradient(circle at 20% 30%,rgba(255,0,150,.15),transparent 50%),
+radial-gradient(circle at 80% 70%,rgba(0,204,255,.15),transparent 50%),
+radial-gradient(circle at 50% 50%,rgba(255,204,0,.15),transparent 50%);
+filter:blur(100px);z-index:-1
+}
+
+/* Navbar */
+.navbar{
+display:flex;justify-content:space-between;align-items:center;
+position:fixed;top:0;left:0;width:100%;
+background:rgba(255,255,255,.85);
+backdrop-filter:blur(12px);
+padding:14px 28px;box-shadow:0 6px 20px rgba(0,0,0,.08);
+z-index:1000
+}
+.logo{font-size:28px;font-weight:700;display:flex;align-items:center;gap:6px}
+.logo::before{content:'📊';animation:pulseGlow 2s infinite}
+@keyframes pulseGlow{0%,100%{opacity:.7}50%{opacity:1}}
+.logout,.coins-btn{
+background:linear-gradient(135deg,#007bff,#0056d6);
+color:#fff;border:none;padding:10px 18px;border-radius:10px;
+cursor:pointer;transition:.2s;font-weight:600
+}
+.logout:hover,.coins-btn:hover{transform:translateY(-2px)}
+
+/* Profile */
+.profile{position:relative;display:flex;align-items:center;cursor:pointer;
+border-radius:50%;overflow:hidden;width:42px;height:42px;
+border:2px solid #007bff;box-shadow:0 0 8px rgba(0,123,255,.3)}
+.profile img{width:100%;height:100%;object-fit:cover}
+.profile-dropdown{
+position:absolute;top:55px;right:0;background:#fff;border-radius:12px;
+box-shadow:0 8px 28px rgba(0,0,0,.1);padding:14px;width:220px;
+display:none;animation:fadeIn .25s ease forwards
+}
+.profile-dropdown h4{margin-bottom:4px;font-weight:600}
+.profile-dropdown small{color:#666}
+.profile-dropdown img{width:60px;height:60px;border-radius:50%;margin-bottom:6px;border:2px solid #007bff}
+
+@keyframes fadeIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+
+/* Main Cards */
+.container{
+display:flex;flex-wrap:wrap;justify-content:center;align-items:center;
+padding:110px 20px 40px;gap:20px
+}
+.card{
+background:rgba(255,255,255,.9);border-radius:16px;
+box-shadow:0 8px 24px rgba(0,0,0,.1);
+width:320px;height:300px;overflow:hidden;cursor:pointer;
+display:flex;flex-direction:column;align-items:center;justify-content:center;
+transition:transform .3s,box-shadow .3s
+}
+.card img{width:100%;height:200px;object-fit:cover}
+.card:hover{transform:translateY(-10px);box-shadow:0 20px 60px rgba(0,0,0,.15)}
+.card h3{margin-top:8px;font-size:20px;font-weight:600}
+.card .arrow{position:absolute;bottom:18px;right:18px;font-size:22px;color:#333}
+
+/* Zigzag Descriptions */
+.zigzag-section{padding:40px 20px;display:flex;flex-direction:column;gap:60px;max-width:1100px;margin:auto}
+.zigzag-item{display:flex;align-items:center;gap:40px;flex-wrap:wrap}
+.zigzag-item img{width:45%;border-radius:18px;box-shadow:0 8px 20px rgba(0,0,0,.15);object-fit:cover}
+.zigzag-item:nth-child(even){flex-direction:row-reverse}
+.zigzag-text{flex:1;min-width:260px}
+.zigzag-text h4{font-size:22px;color:#007bff;margin-bottom:10px}
+.zigzag-text p{line-height:1.6;color:#444;font-size:16px}
+@media(max-width:800px){.zigzag-item img{width:100%}.zigzag-item{flex-direction:column!important}}
+
+/* Cash & Coins Panel */
+.cash-panel{
+position:fixed;top:0;right:-320px;width:300px;height:100%;
+background:linear-gradient(180deg,#0a0a0a,#111933,#1e2a47);
+color:#fff;box-shadow:-4px 0 20px rgba(0,0,0,.3);
+transition:right .4s ease;z-index:1500;padding:24px
+}
+.cash-panel.open{right:0}
+.cash-panel h3{margin-bottom:20px;text-align:center;font-size:24px;color:#00d4ff;text-shadow:0 0 10px #00d4ff}
+.cash-panel p{margin:12px 0;font-size:16px}
+.cash-close{position:absolute;top:12px;right:18px;font-size:22px;cursor:pointer;color:#fff}
+.cash-stat{background:rgba(255,255,255,.1);border-radius:10px;padding:14px;text-align:center;margin-top:20px}
+.cash-stat span{font-size:26px;color:#ffd700;font-weight:700;text-shadow:0 0 8px #ffd700}
+
+/* Inventory Modal,*/
+.inventory-modal{display:none;position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,.65);backdrop-filter:blur(5px)}
+.inventory-panel{
+background:#fefefe;border-radius:18px;
+width:95%;max-width:1100px;margin:4% auto;padding:20px;
+box-shadow:0 16px 60px rgba(0,0,0,.2);
+animation:fadeIn .3s ease forwards
+}
+.fade{animation:fadeIn .4s ease forwards}
+.stat-box:hover{transform:translateY(-5px)}
+.stat-box h4{font-size:15px;margin-bottom:4px;color:#333}
+.stat-box p{font-weight:700;font-size:18px}
+
+
+/* Forms, Tables */
+.form{background:#fff;padding:12px;border-radius:12px;margin-bottom:14px;box-shadow:0 4px 16px rgba(0,0,0,.05);animation:fadeIn .3s ease forwards}
+.field{margin-bottom:10px}
+.field input{width:100%;padding:8px;border-radius:8px;border:1px solid #ddd}
+.btn{border:none;padding:8px 14px;border-radius:10px;cursor:pointer;font-weight:600}
+.btn-primary{background:#007bff;color:#fff}
+.btn-ghost{background:#f8f9fa;border:1px solid #ddd}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{padding:8px 10px;border-bottom:1px solid #eee;text-align:left}
+.chart-card{background:#fff;padding:10px;border-radius:12px;box-shadow:0 4px 16px rgba(0,0,0,.05)}
+.fade{animation:fadeIn .4s ease forwards}
+@keyframes floatEmoji{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-80px)scale(1.3)}}
+.emoji-pop{position:fixed;font-size:24px;animation:floatEmoji 1s ease forwards;pointer-events:none;z-index:9999}
+
+/* Responsive */
+@media(max-width:900px){.inventory-panel{width:96%;max-height:90vh;overflow:auto}}
+
+</style>
+
+</head>
+<body>
+
+<!-- Navbar -->
+
+<nav class="navbar">
+<div class="logo">PAIRFECT</div>
+<div style="display:flex;align-items:center;gap:10px;">
+<button class="coins-btn" onclick="toggleCash()">Cash & Coins</button>
+<div class="profile" onclick="toggleProfile()">
+<img id="profileImg" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="profile">
+<div class="profile-dropdown" id="profileDropdown">
+<center>
+<img id="profilePreview" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png">
+<h4 id="userName">User Name</h4>
+<small id="userEmail">user@example.com</small><br>
+<input type="file" id="profileUpload" accept="image/*" onchange="uploadProfile(event)">
+</center>
+</div>
+</div>
+<button class="logout" onclick="logout()">Logout</button>
+</div>
+</nav>
+
+<!-- Cards -->
+
+<div class="container">
+<a href="https://www.incometaxindia.gov.in/" target="_blank" class="card">
+<img src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3" alt="">
+<h3>TAX & CREDIT SCORE</h3>
+<i class="fas fa-arrow-right arrow"></i>
+</a>
+
+<div class="card" onclick="openInventory()">
+<img src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d" alt="">
+<h3>INVENTORY HANDLING</h3>
+<i class="fas fa-arrow-right arrow"></i>
+</div>
+
+<div class="card" onclick="openChatbot()">
+<img src="https://images.unsplash.com/photo-1531746790731-6c087fecd65a" alt="">
+<h3>ASSISTANCE</h3>
+<i class="fas fa-arrow-right arrow"></i>
+</div>
+</div>
+
+<!-- Zigzag Section -->
+
+<section class="zigzag-section">
+<div class="zigzag-item">
+<img src="pexels-n-voitkevich-6863260.jpg" alt="Tax">
+<div class="zigzag-text">
+<h4><i class="fas fa-calculator"></i> TAX & CREDIT SCORE</h4>
+<p>Manage your taxes efficiently with tools for filing returns, tracking deductions, and improving your credit score. Access calculators, guides, and expert advice to optimize your financial health and ensure compliance with regulations.</p>
+</div>
+</div>
+
+<div class="zigzag-item">
+<img src="pexels-pixabay-162539.jpg" alt="Inventory">
+<div class="zigzag-text">
+<h4><i class="fas fa-boxes"></i> INVENTORY HANDLING</h4>
+<p>Streamline your inventory with advanced tracking, stock alerts, and automated ordering. Monitor supplies, reduce waste, and make data-driven decisions to keep your business operations smooth and profitable.</p>
+</div>
+</div>
+
+<div class="zigzag-item">
+<img src="pexels-kindelmedia-8566526.jpg" alt="Assistance">
+<div class="zigzag-text">
+<h4><i class="fas fa-hands-helping"></i> ASSISTANCE</h4>
+<p>Get personalized support for startups and SMEs. From funding guidance to mentorship, access resources for growth, compliance, and networking to build a successful business in India's dynamic economy.</p>
+</div>
+</div>
+</section>
+
+<!-- Cash & Coins Panel -->
+
+<div class="cash-panel" id="cashPanel">
+<span class="cash-close" onclick="toggleCash()">&times;</span>
+<h3>💰 Cash & Coins</h3>
+<p>100 Sales = 100 Coins</p>
+<div class="cash-stat">
+<p>Total Coins Earned:</p>
+<span id="coinCount">0</span>
+</div>
+</div>
+
+<!-- Inventory Modal -->
+
+<div id="inventoryModal" class="inventory-modal">
+<div class="inventory-panel fade">
+<h3>📦 Inventory Dashboard</h3>
+<span style="font-size:24px;cursor:pointer" onclick="closeInventory()">&times;</span>
+
+<!-- Stats -->
+<div class="stats-bar">
+<div class="stat-box" id="totalProducts"><h4>Total Products</h4><p>0</p></div>
+<div class="stat-box" id="totalSales"><h4>Total Sales</h4><p>0</p></div>
+<div class="stat-box" id="totalRevenue"><h4>Total Revenue</h4><p>₹0</p></div>
+</div>
+<!-- Form -->
+<div class="form">
+<h4>➕ Add Product</h4>
+<div class="field"><input id="pName" placeholder="Product name"></div>
+<div class="field"><input id="pQty" type="number" placeholder="Quantity"></div>
+<div class="field"><input id="pPrice" type="number" placeholder="Price ₹"></div>
+<button class="btn btn-primary" onclick="addProduct()">Add ✅</button>
+</div>
+
+<!-- Products -->
+<div class="form"><h4>📋 Products</h4>
+<table id="productsTable"><thead><tr><th>Name</th><th>Qty</th><th>Price</th><th>Action</th></tr></thead><tbody></tbody></table>
+</div>
+
+<!-- Chart -->
+<div class="chart-card">
+<canvas id="salesChart" height="200"></canvas>
+</div>
+
+<!-- Sales -->
+<div class="form"><h4>🧾 Sales History</h4>
+<table id="salesTable"><thead><tr><th>Product</th><th>Qty</th><th>Total</th><th>Date</th></tr></thead><tbody></tbody></table>
+</div>
+
+</div>
+</div>
+
+<!-- Chatbot -->
+
+<div id="chatModal" class="inventory-modal">
+<div class="inventory-panel fade" style="max-width:500px">
+<h3>AI Assistance Chatbot</h3>
+<span style="position:absolute;right:20px;top:10px;font-size:24px;cursor:pointer" onclick="closeChatbot()">&times;</span>
+<div id="chatHistory" style="height:300px;overflow:auto;margin:10px 0;padding:8px;border:1px solid #ddd;border-radius:10px">
+<div>Hello! Ask me about business ideas 💡</div>
+</div>
+<input id="chatInput" placeholder="Type here..." style="width:100%;padding:8px;border-radius:10px;border:1px solid #ddd" onkeypress="if(event.key==='Enter')sendMessage()">
+</div>
+</div>
+
+<script>
+// profile popup
+function toggleProfile(){
+let d=document.getElementById('profileDropdown');
+d.style.display=d.style.display==='block'?'none':'block';
+}
+function uploadProfile(e){
+const file=e.target.files[0];if(!file)return;
+const reader=new FileReader();
+reader.onload=function(){
+localStorage.setItem('profileImg',reader.result);
+document.getElementById('profileImg').src=reader.result;
+document.getElementById('profilePreview').src=reader.result;
+};
+reader.readAsDataURL(file);
+}
+window.onload=function(){
+const saved=localStorage.getItem('profileImg');
+if(saved){document.getElementById('profileImg').src=saved;document.getElementById('profilePreview').src=saved;}
+}
+
+// Logout
+function logout(){location.href='anu.html'}
+
+// Chatbot
+function openChatbot(){document.getElementById('chatModal').style.display='block'}
+function closeChatbot(){document.getElementById('chatModal').style.display='none'}
+function sendMessage(){
+const input=document.getElementById('chatInput');
+const msg=input.value.trim();if(!msg)return;
+const chat=document.getElementById('chatHistory');
+chat.innerHTML+=`<div style="text-align:right;color:#007bff">${msg}</div>`;
+input.value='';
+setTimeout(()=>chat.innerHTML+=`<div>🤖 ${getBotResponse(msg)}</div>`,700);
+}
+function getBotResponse(m){m=m.toLowerCase();if(m.includes('fund'))return'Look for Startup India grants 💰';if(m.includes('tax'))return'Check government tax portals.';return"I'm here to help!"}
+
+// Inventory
+let products=[],sales=[];
+function openInventory(){document.getElementById('inventoryModal').style.display='block';}
+function closeInventory(){document.getElementById('inventoryModal').style.display='none'}
+function addProduct(){
+const n=document.getElementById('pName').value.trim(),q=+document.getElementById('pQty').value,p=+document.getElementById('pPrice').value;
+if(!n||q<=0||p<=0){alert('Enter valid details');return}
+products.push({name:n,qty:q,price:p});
+document.getElementById('pName').value=document.getElementById('pQty').value=document.getElementById('pPrice').value='';
+renderAll();popEmoji('📦')
+}
+
+function renderAll(){
+const pt=document.querySelector('#productsTable tbody');pt.innerHTML='';
+products.forEach((x,i)=>{pt.innerHTML+=`<tr><td>${x.name}</td><td>${x.qty}</td><td>₹${x.price}</td><td><button class='btn btn-ghost' onclick='sell(${i})'>Sell</button></td></tr>`});
+const st=document.querySelector('#salesTable tbody');st.innerHTML='';
+sales.forEach(s=>st.innerHTML+=`<tr><td>${s.name}</td><td>${s.qty}</td><td>₹${s.total}</td><td>${s.date}</td></tr>`);
+updateStats();updateChart()
+}
+function sell(i){
+const p=prompt('Quantity to sell?');if(!p)return;
+const qty=+p;if(qty<=0||qty>products[i].qty){alert('Invalid quantity');return}
+products[i].qty-=qty;const total=qty*products[i].price;
+sales.push({name:products[i].name,qty,total,date:new Date().toLocaleString()});
+renderAll();popEmoji('💸')
+}
+function updateStats(){
+document.getElementById('totalProducts').querySelector('p').innerText=products.length;
+document.getElementById('totalSales').querySelector('p').innerText=sales.length;
+let revenue=sales.reduce((a,b)=>a+b.total,0);
+document.getElementById('totalRevenue').querySelector('p').innerText='₹'+revenue.toFixed(2)
+}
+let chart;function updateChart(){
+const ctx=document.getElementById('salesChart');
+if(!chart){chart=new Chart(ctx,{type:'bar',data:{labels:[],datasets:[{label:'Revenue ₹',data:[],backgroundColor:'rgba(0,123,255,0.5)'}]},options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}}}})}
+chart.data.labels=sales.map((s,i)=>'#'+(i+1));
+chart.data.datasets[0].data=sales.map(s=>s.total);
+chart.update()
+}
+function popEmoji(e){
+const el=document.createElement('div');el.className='emoji-pop';el.textContent=e;
+el.style.left=Math.random()*90+'vw';el.style.bottom='20px';
+document.body.appendChild(el);setTimeout(()=>el.remove(),1000)
+}
+// Cash panel
+function toggleCash(){
+document.getElementById('cashPanel').classList.toggle('open');
+updateCoins();
+}
+function updateCoins(){
+const coins=sales.length*100;
+document.getElementById('coinCount').innerText=coins;
+}
+</script>
+
+</body>
+</html>
